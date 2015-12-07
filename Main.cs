@@ -67,9 +67,29 @@ namespace AssemblyInfoUtil
 
         private static void SetReadOnly(string fileName, bool toBeReadOnly)
         {
-            var attr = File.GetAttributes(fileName);
-            attr = toBeReadOnly ? attr | FileAttributes.ReadOnly : attr & ~FileAttributes.ReadOnly;
-            File.SetAttributes(fileName, attr);
+            try {
+                var attr = File.GetAttributes(fileName);
+                attr = toBeReadOnly ? attr | FileAttributes.ReadOnly : attr & ~FileAttributes.ReadOnly;
+                File.SetAttributes(fileName, attr);
+                }
+            catch(Exception ex)
+            {
+                if (ex is ArgumentException ||
+                    ex is PathTooLongException ||
+                    ex is PathTooLongException	||
+                    ex is DirectoryNotFoundException ||
+                    ex isFileNotFoundException)
+                    {
+                        //Something is wrong with the file...
+                        throw ex;
+                    }
+                if (ex is NotSupportedException	||
+                    ex is UnauthorizedAccessException)
+                    {
+                        //You have a security or implementation problem
+                        throw ex;
+                    }
+            }
         }
 
 
